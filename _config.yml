@@ -40,13 +40,18 @@ plugins:
 #   posts: "Projects"
 
 defaults:
-  -
-    scope:
+  - scope:
       path: ""
       type: "posts"
     values:
       layout: "post"
       author: "Toms"
+
+  - scope:
+      path: "assets/img"
+    values:
+      image: true
+
 
 
 # Exclude from processing.
