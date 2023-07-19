@@ -3,6 +3,7 @@ layout: post
 title:  "Merge sort example"
 date:   2022-7-09 +0300
 categories: merge-sort
+permalink: /merge-sort/
 ---
 In this blog post, I'm sharing a small C program that implements the merge sort algorithm to sort an array of numbers. I developed this program as part of my journey to better understand recursion in programming.
 

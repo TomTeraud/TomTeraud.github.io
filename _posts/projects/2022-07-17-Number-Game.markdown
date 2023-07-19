@@ -3,8 +3,8 @@ layout: post
 title:  "Number Game"
 date:   2021-05-15 +0300
 categories: jekyll update
-
 project_img_folder: number-game
+permalink: /number-game/
 ---
 
 

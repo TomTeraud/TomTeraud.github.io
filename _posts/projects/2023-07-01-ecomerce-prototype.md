@@ -3,8 +3,8 @@ layout: post
 title:  "e-comerce"
 date:   2023-7-01 +0300
 categories: ecomerce
-
 project_img_folder: ecomerce-prototype
+permalink: /e-comerce/
 ---
 I developed a dynamic e-commerce prototype web application as part of my CS50x final project. This application serves as a platform for selling clothes online, utilizing Python and Flask as the primary technologies.
 The application is deployed on Google Cloud Platform's App Engine, ensuring scalability and reliable performance.
