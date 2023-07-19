@@ -1,5 +1,4 @@
 <div class="post-content">
-    <p>Project images.</p>
     {% for image in site.static_files %}
     {% if image.path contains '/projects/' %}
       {% if image.path contains page.project_img_folder %}
