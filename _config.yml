@@ -45,7 +45,7 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      author: "Toms"
+      # author: "Toms"
 
   - scope:
       path: "assets/img"

@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Number Game"
-date:   2023-07-17 18:28:21 +0300
+date:   2021-05-15 +0300
 categories: jekyll update
 
 project_img_folder: number-game
