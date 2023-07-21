@@ -25,7 +25,7 @@ Get ready for an engaging math challenge! Answer a series of questions quickly a
 **Start Now!**
 
 Try "The Number Game" on my GitHub repository and see how high you can score. Challenge yourself, embrace the joy of learning, and let's embark on this exciting coding journey together!
-[Link to GitHub Repository](<a href="https://scratch.mit.edu/projects/530135238" target="_blank">Click here to play!</a>)
+[Link to game on Scratch server](<a href="https://scratch.mit.edu/projects/530135238" target="_blank">Click here to play!</a>)
 
 
 {% include image-gallery.html %}

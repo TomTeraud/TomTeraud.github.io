@@ -25,5 +25,4 @@ Enjoy the game right in your terminal! No fancy graphics, just pure fun and codi
 **Try It Out**
 
 Ready to play? Test your skills and challenge the computer players. The code is available on my GitHub repository:
-
 (<a href="https://github.com/TomTeraud/Rock-Paper-Scissors-Lizard-Spock" target="_blank">https://github.com/TomTeraud/Rock-Paper-Scissors-Lizard-Spock</a>)
