@@ -18,7 +18,11 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Toms Tērauds | Portfolio
+author:
+  name: Toms Tērauds
+  email: "tomsterauds@gmail.com"
+
+title: Portfolio
 email: tomsterauds@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Welcome to my programming portfolio! Here, 
@@ -34,6 +38,16 @@ github_username: TomTeraud
 theme: minima
 plugins:
   - jekyll-feed
+
+
+# Social networks
+minima:
+  skin: dark
+  social_links:
+    - { platform: github,  user_url: "https://github.com/TomTeraud" }
+    - { platform: linkedin, user_url: "https://www.linkedin.com/in/toms-terauds" }
+    - { platform: twitter, user_url: "https://twitter.com/terauds_toms" }
+
 
 # # Custom translations
 # i18n:
