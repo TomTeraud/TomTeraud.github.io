@@ -11,6 +11,6 @@ I'm learning to program by building a voice-to-text app using the OpenAI API. Th
 
 **Download Links:**
 
-- [Download the Packed Version for LINUX OS](https://www.dropbox.com/scl/fi/veapaev70wgzyisxfq4vj/PronouncePal_linux.zip?dl=1)
+- [Download the Packed Version for LINUX OS](https://www.dropbox.com/scl/fi/mut3b5oofcfddh3fmi4or/PronouncePal_linux.zip?dl=1)
 
 - [Download the Packed Version for WINDOWS OS](https://www.dropbox.com/scl/fi/cztml79zu394942wnqffk/PronouncePal_win.zip?dl=1)
