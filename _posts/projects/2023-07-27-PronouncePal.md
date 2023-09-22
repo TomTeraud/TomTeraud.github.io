@@ -2,6 +2,7 @@
 layout: post
 title: "PronouncePal"
 date: 2023-07-27 +0300
+project_img_folder: pronouncepal
 permalink: /PronouncePal/
 ---
 
@@ -30,3 +31,4 @@ Interactive Accuracy Bar: Keep a close eye on your journey towards English speec
 
 Elevate your English speech and communication skills with PronouncePal. Download the app today and embark on a transformative learning experience that empowers you to speak English with clarity and precision.
 
+{% include image-gallery.html %}
