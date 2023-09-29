@@ -25,10 +25,10 @@ Interactive Accuracy Bar: Keep a close eye on your journey towards English speec
 
 **Download Links:**
 
-- [Download the Packed Version for LINUX OS](https://www.dropbox.com/scl/fi/2mrx5z0uce6t3bfd41was/PronouncePal_linux_01.zip?dl=1)
+- [Download the Packed Version for LINUX OS](https://github.com/TomTeraud/PronouncePal/releases/download/v1.1.0/PronouncePal_linux_01.zip)
 
 
-- [Download the Packed Version for WINDOWS OS](https://www.dropbox.com/scl/fi/grwhyult2c6swgxmcwzm2/PronouncePal_win_01.exe?dl=1)
+- [Download the Packed Version for WINDOWS OS](https://github.com/TomTeraud/PronouncePal/releases/download/v1.1.0/PronouncePal_win_01.exe)
 
 Elevate your English speech and communication skills with PronouncePal. Download the app today and embark on a transformative learning experience that empowers you to speak English with clarity and precision.
 
