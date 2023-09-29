@@ -25,7 +25,8 @@ Interactive Accuracy Bar: Keep a close eye on your journey towards English speec
 
 **Download Links:**
 
-- [Download the Packed Version for LINUX OS](https://www.dropbox.com/scl/fi/djtf9fx7c6er57ii5s99x/PronouncePal_linux_01?dl=1)
+- [Download the Packed Version for LINUX OS](https://www.dropbox.com/scl/fi/2mrx5z0uce6t3bfd41was/PronouncePal_linux_01.zip?dl=1)
+
 
 - [Download the Packed Version for WINDOWS OS](https://www.dropbox.com/scl/fi/grwhyult2c6swgxmcwzm2/PronouncePal_win_01.exe?dl=1)
 
