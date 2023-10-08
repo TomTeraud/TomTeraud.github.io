@@ -4,14 +4,12 @@ title: About
 permalink: /about/
 ---
 
-Hi, I’m Toms. I'm a lifelong learner who finds joy in exploring, experimenting, fixing, and creating.
+Hello, I'm Toms, a self-employed handyman with a growing passion for programming and software development. I've embarked on a journey to expand my horizons and explore the world of coding alongside my handyman work.
 
-As a motivated software developer with a background in home improvement, I am driven to pursue a fulfilling career in software development. Recently, I made a transition to programming and successfully completed CS50x, which provided me with a solid foundation in computer science principles and various programming languages.
+My enthusiasm for learning has led me to dive into various programming languages and computer science principles. I'm proud to have completed CS50x, which has given me a solid foundation in the fundamentals of software development.
 
-I am passionate about continuous learning and constantly seek opportunities to expand my knowledge and skills in software development. Currently, I am actively working on personal projects and exploring open-source contributions to further enhance my expertise.
+Continual learning is my mantra, and I'm always on the lookout for opportunities to enhance my skills in software development. At present, I'm actively engaged in personal coding projects, all in the pursuit of honing my expertise.
 
-Drawing from my experience in problem-solving and meticulous attention to detail as a handyman, I bring a unique perspective to software development. I am excited to leverage my transferable skills, including effective communication and adaptability, to contribute to development teams and deliver high-quality solutions.
+You're invited to explore my GitHub (https://github.com/TomTeraud) profile, where I share my ongoing programming endeavors. While I'm still in the early stages of my software development journey, I'm committed to continuous growth and embracing new challenges with enthusiasm.
 
-I invite you to explore my GitHub account, where I share my ongoing programming projects. While I am still in the early stages of my software development journey, I am committed to continuous growth and eagerly embrace new challenges.
-
-If you are seeking a dedicated and driven software developer with a strong foundation, a passion for learning, and an unwavering commitment to delivering exceptional results, I would be thrilled to collaborate with you on meaningful projects.
+If you're in search of a dedicated and motivated software developer with a strong foundation, a passion for learning, and an unwavering commitment to excellence, I'm eager to connect and collaborate on meaningful projects.
