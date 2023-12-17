@@ -13,8 +13,6 @@ The application is deployed on Google Cloud Platform's App Engine, ensuring scal
 
 **Links**
 
-[Link to Web Aplication]
-(<a href="https://rokdarbutirgus.oa.r.appspot.com/" target="_blank">https://rokdarbutirgus.oa.r.appspot.com</a>)
 
 [Link to GitHub Repository](<a href="https://github.com/TomTeraud/e-commerce-prototype" target="_blank">https://github.com/TomTeraud/e-commerce-prototype</a>)
 
