@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "e-comerce"
+title:  "e-commerce"
 date:   2023-7-01 +0300
-categories: ecomerce
-project_img_folder: ecomerce-prototype
-permalink: /e-comerce/
+categories: ecommerce
+project_img_folder: ecommerce-prototype
+permalink: /e-commerce/
 ---
 **About**
 
