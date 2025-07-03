@@ -36,7 +36,7 @@ jobs:
           # Example: Install Ruby, Node.js, and Jekyll
 
       - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
+        uses: actions/jekyll-build-pages@v1.1.1
         with:
           source: ./  # Set the source directory of your Jekyll project
           destination: ./_site  # Set the destination directory for the built site
