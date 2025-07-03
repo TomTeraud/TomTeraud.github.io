@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "PronouncePal (under development)"
+title: "PronouncePal (closed)"
 date: 2023-07-27 +0300
 project_img_folder: pronouncepal
 permalink: /PronouncePal/
