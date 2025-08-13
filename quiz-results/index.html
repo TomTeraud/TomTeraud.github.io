@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: white;
+            color: #6366f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            font-size: 36px;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6366f1;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .questions {
+            padding: 20px;
+        }
+        
+        .question-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        
+        .question-item.correct {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .question-item.incorrect {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .question-number {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+        
+        .answer {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .correct-answer {
+            color: #28a745;
+        }
+        
+        .wrong-answer {
+            color: #dc3545;
+        }
+        
+        .share-button {
+            display: block;
+            width: 90%;
+            margin: 20px auto;
+            padding: 15px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .share-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #dc3545;
+        }
+        
+        .date {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="quiz-title">Loading Results...</h1>
+            <div class="score-circle" id="score">--%</div>
+            <p id="score-text">Calculating...</p>
+            <p class="date" id="date"></p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="correct">0</div>
+                <div class="stat-label">Correct</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="total">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="grade">-</div>
+                <div class="stat-label">Grade</div>
+            </div>
+        </div>
+        
+        <div class="questions" id="questions"></div>
+        
+        <button class="share-button" onclick="shareResults()">Share These Results 📱</button>
+    </div>
+    
+    <script>
+        function loadResults() {
+            try {
+                // Get encoded data from URL hash
+                const hash = window.location.hash.substring(1);
+                if (!hash) {
+                    throw new Error('No quiz data found');
+                }
+                
+                // Decode the data
+                const decoded = atob(hash.replace(/-/g, '+').replace(/_/g, '/'));
+                const data = JSON.parse(decoded);
+                
+                // Update header
+                document.getElementById('quiz-title').textContent = data.quiz;
+                document.getElementById('score').textContent = data.score + '%';
+                document.getElementById('score-text').textContent = 
+                    `You scored ${data.correct} out of ${data.total} questions correctly`;
+                document.getElementById('date').textContent = `Completed on ${data.date}`;
+                
+                // Update stats
+                document.getElementById('correct').textContent = data.correct;
+                document.getElementById('total').textContent = data.total;
+                
+                // Calculate grade
+                let grade = 'F';
+                if (data.score >= 90) grade = 'A';
+                else if (data.score >= 80) grade = 'B';
+                else if (data.score >= 70) grade = 'C';
+                else if (data.score >= 60) grade = 'D';
+                document.getElementById('grade').textContent = grade;
+                
+                // Display questions
+                const questionsDiv = document.getElementById('questions');
+                questionsDiv.innerHTML = '';
+                
+                data.details.forEach(q => {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = `question-item ${q.is_correct ? 'correct' : 'incorrect'}`;
+                    
+                    questionDiv.innerHTML = `
+                        <div class="question-number">Question ${q.num}: ${q.question}</div>
+                        <div class="answer">
+                            Your answer: <span class="${q.is_correct ? 'correct-answer' : 'wrong-answer'}">
+                                ${q.user_answer}
+                            </span>
+                        </div>
+                        ${!q.is_correct ? `
+                            <div class="answer">
+                                Correct answer: <span class="correct-answer">${q.correct_answer}</span>
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    questionsDiv.appendChild(questionDiv);
+                });
+                
+            } catch (error) {
+                document.querySelector('.container').innerHTML = `
+                    <div class="error">
+                        <h2>Unable to load quiz results</h2>
+                        <p>Please check the link and try again</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function shareResults() {
+            const text = `I scored ${document.getElementById('score').textContent} on ${document.getElementById('quiz-title').textContent}! Check out my results: ${window.location.href}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Quiz Results',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback - copy to clipboard
+                navigator.clipboard.writeText(text);
+                alert('Results link copied to clipboard!');
+            }
+        }
+        
+        // Load results on page load
+        window.addEventListener('load', loadResults);
+    </script>
+</body>
+</html>
