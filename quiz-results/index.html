@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Results</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -185,106 +186,173 @@
         
         <button class="share-button" onclick="shareResults()">Share These Results 📱</button>
     </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
-<script>
-function base64ToUint8Array(base64) {
-    const binary_string = atob(base64);
-    const len = binary_string.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-        bytes[i] = binary_string.charCodeAt(i);
-    }
-    return bytes;
-}
-
-function loadResults() {
-    try {
-        // Get 'data' param from query string instead of hash
-        const params = new URLSearchParams(window.location.search);
-        let hash = params.get('data');
-        if (!hash) throw new Error("No quiz data found");
-
-        const isCompressed = hash.startsWith('c');
-        const actualHash = isCompressed ? hash.substring(1) : hash;
-
-        let data;
-        if (isCompressed) {
-            // Compressed format
-            const compressedBytes = base64ToUint8Array(
-                actualHash.replace(/-/g, '+').replace(/_/g, '/')
-            );
-            const jsonStr = pako.inflate(compressedBytes, { to: 'string' });
-            data = JSON.parse(jsonStr);
-        } else {
-            // Uncompressed JSON
-            const jsonStr = atob(actualHash.replace(/-/g, '+').replace(/_/g, '/'));
-            data = JSON.parse(jsonStr);
-        }
-
-        // Update page
-        document.getElementById('quiz-title').textContent = data.quiz;
-        document.getElementById('score').textContent = data.score + '%';
-        document.getElementById('score-text').textContent =
-            `You scored ${data.correct} out of ${data.total} questions correctly`;
-        document.getElementById('date').textContent = `Completed on ${data.date}`;
-
-        document.getElementById('correct').textContent = data.correct;
-        document.getElementById('total').textContent = data.total;
-
-        let grade = 'F';
-        if (data.score >= 90) grade = 'A';
-        else if (data.score >= 80) grade = 'B';
-        else if (data.score >= 70) grade = 'C';
-        else if (data.score >= 60) grade = 'D';
-        document.getElementById('grade').textContent = grade;
-
-        const questionsDiv = document.getElementById('questions');
-        questionsDiv.innerHTML = '';
-        data.details.forEach(q => {
-            const questionDiv = document.createElement('div');
-            questionDiv.className = `question-item ${q.is_correct ? 'correct' : 'incorrect'}`;
-            questionDiv.innerHTML = `
-                <div class="question-number">Question ${q.num}: ${q.question}</div>
-                <div class="answer">
-                    Your answer: <span class="${q.is_correct ? 'correct-answer' : 'wrong-answer'}">
-                        ${q.user_answer}
-                    </span>
-                </div>
-                ${!q.is_correct ? `
-                    <div class="answer">
-                        Correct answer: <span class="correct-answer">${q.correct_answer}</span>
+    
+    <script>
+        function loadResults() {
+            console.log('=== Starting loadResults ===');
+            console.log('Full URL:', window.location.href);
+            
+            try {
+                // Get encoded data from URL hash
+                const hash = window.location.hash.substring(1);
+                console.log('1. Hash extracted:', hash);
+                console.log('   Hash length:', hash.length);
+                
+                if (!hash) {
+                    console.error('No hash found in URL');
+                    throw new Error('No quiz data found');
+                }
+                
+                // Check if compressed (starts with 'c')
+                const isCompressed = hash.startsWith('c');
+                const actualHash = isCompressed ? hash.substring(1) : hash;
+                console.log('2. Is compressed?', isCompressed);
+                console.log('   Actual hash to decode:', actualHash.substring(0, 50) + '...');
+                
+                // Decode base64
+                let decoded;
+                try {
+                    decoded = atob(actualHash.replace(/-/g, '+').replace(/_/g, '/'));
+                    console.log('3. Base64 decoded successfully');
+                    console.log('   Decoded length:', decoded.length);
+                } catch (e) {
+                    console.error('Base64 decode failed:', e);
+                    throw new Error('Invalid data format');
+                }
+                
+                // Parse data (with or without decompression)
+                let data;
+                if (isCompressed || decoded.charCodeAt(0) === 120) { // 120 = 'x' (zlib header)
+                    console.log('4. Attempting to decompress data...');
+                    try {
+                        // Convert string to Uint8Array for pako
+                        const charData = decoded.split('').map(x => x.charCodeAt(0));
+                        const binData = new Uint8Array(charData);
+                        const decompressed = pako.inflate(binData, { to: 'string' });
+                        data = JSON.parse(decompressed);
+                        console.log('   Decompression successful');
+                    } catch (e) {
+                        console.error('Decompression failed:', e);
+                        console.log('   Attempting direct JSON parse...');
+                        data = JSON.parse(decoded);
+                    }
+                } else {
+                    console.log('4. Parsing uncompressed JSON...');
+                    data = JSON.parse(decoded);
+                }
+                
+                console.log('5. Data parsed successfully:', data);
+                console.log('   Quiz title:', data.quiz);
+                console.log('   Score:', data.score);
+                console.log('   Details count:', data.details ? data.details.length : 'No details');
+                console.log('   Wrong answers count:', data.wrong ? data.wrong.length : 'No wrong array');
+                
+                // Update header
+                document.getElementById('quiz-title').textContent = data.quiz;
+                document.getElementById('score').textContent = data.score + '%';
+                document.getElementById('score-text').textContent = 
+                    `You scored ${data.correct} out of ${data.total} questions correctly`;
+                document.getElementById('date').textContent = `Completed on ${data.date}`;
+                
+                // Update stats
+                document.getElementById('correct').textContent = data.correct;
+                document.getElementById('total').textContent = data.total;
+                
+                // Calculate grade
+                let grade = 'F';
+                if (data.score >= 90) grade = 'A';
+                else if (data.score >= 80) grade = 'B';
+                else if (data.score >= 70) grade = 'C';
+                else if (data.score >= 60) grade = 'D';
+                document.getElementById('grade').textContent = grade;
+                
+                // Display questions
+                const questionsDiv = document.getElementById('questions');
+                questionsDiv.innerHTML = '';
+                
+                // Handle both full details and compact wrong-only format
+                const questions = data.details || data.wrong || [];
+                console.log('6. Processing', questions.length, 'questions');
+                
+                if (data.details) {
+                    // Full details format
+                    data.details.forEach(q => {
+                        const questionDiv = document.createElement('div');
+                        questionDiv.className = `question-item ${q.is_correct ? 'correct' : 'incorrect'}`;
+                        
+                        questionDiv.innerHTML = `
+                            <div class="question-number">Question ${q.num}: ${q.question}</div>
+                            <div class="answer">
+                                Your answer: <span class="${q.is_correct ? 'correct-answer' : 'wrong-answer'}">
+                                    ${q.user_answer}
+                                </span>
+                            </div>
+                            ${!q.is_correct ? `
+                                <div class="answer">
+                                    Correct answer: <span class="correct-answer">${q.correct_answer}</span>
+                                </div>
+                            ` : ''}
+                        `;
+                        
+                        questionsDiv.appendChild(questionDiv);
+                    });
+                } else if (data.wrong) {
+                    // Compact format - only wrong answers
+                    questionsDiv.innerHTML = '<p style="margin-bottom: 15px; color: #666;">Showing incorrect answers only:</p>';
+                    data.wrong.forEach(q => {
+                        const questionDiv = document.createElement('div');
+                        questionDiv.className = 'question-item incorrect';
+                        
+                        questionDiv.innerHTML = `
+                            <div class="question-number">Question ${q.num}: ${q.q}</div>
+                            <div class="answer">
+                                Your answer: <span class="wrong-answer">${q.ua}</span>
+                            </div>
+                            <div class="answer">
+                                Correct answer: <span class="correct-answer">${q.ca}</span>
+                            </div>
+                        `;
+                        
+                        questionsDiv.appendChild(questionDiv);
+                    });
+                }
+                
+                console.log('=== Results loaded successfully ===');
+                
+            } catch (error) {
+                console.error('=== Error loading results ===');
+                console.error('Error details:', error);
+                console.error('Stack trace:', error.stack);
+                
+                document.querySelector('.container').innerHTML = `
+                    <div class="error">
+                        <h2>Unable to load quiz results</h2>
+                        <p>Please check the link and try again</p>
+                        <p style="font-size: 12px; margin-top: 20px;">Error: ${error.message}</p>
+                        <p style="font-size: 10px; margin-top: 10px;">Check browser console for details</p>
                     </div>
-                ` : ''}
-            `;
-            questionsDiv.appendChild(questionDiv);
-        });
-
-    } catch (error) {
-        document.querySelector('.container').innerHTML = `
-            <div class="error">
-                <h2>Unable to load quiz results</h2>
-                <p>Please check the link and try again</p>
-            </div>
-        `;
-    }
-}
-
-function shareResults() {
-    const text = `I scored ${document.getElementById('score').textContent} on ${document.getElementById('quiz-title').textContent}! Check out my results: ${window.location.href}`;
-    if (navigator.share) {
-        navigator.share({
-            title: 'Quiz Results',
-            text: text,
-            url: window.location.href
-        });
-    } else {
-        navigator.clipboard.writeText(text);
-        alert('Results link copied to clipboard!');
-    }
-}
-
-window.addEventListener('load', loadResults);
-</script>
-
+                `;
+            }
+        }
+        
+        function shareResults() {
+            const text = `I scored ${document.getElementById('score').textContent} on ${document.getElementById('quiz-title').textContent}! Check out my results: ${window.location.href}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Quiz Results',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback - copy to clipboard
+                navigator.clipboard.writeText(text);
+                alert('Results link copied to clipboard!');
+            }
+        }
+        
+        // Load results on page load
+        window.addEventListener('load', loadResults);
+    </script>
 </body>
 </html>
