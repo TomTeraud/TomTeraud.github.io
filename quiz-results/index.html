@@ -185,19 +185,22 @@
         
         <button class="share-button" onclick="shareResults()">Share These Results 📱</button>
     </div>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     <script>
         function loadResults() {
             try {
-                // Get encoded data from URL hash
                 const hash = window.location.hash.substring(1);
-                if (!hash) {
-                    throw new Error('No quiz data found');
-                }
+                const isCompressed = hash.startsWith('c');
+                const actualHash = isCompressed ? hash.substring(1) : hash;
                 
                 // Decode the data
-                const decoded = atob(hash.replace(/-/g, '+').replace(/_/g, '/'));
-                const data = JSON.parse(decoded);
+                const decoded = atob(actualHash.replace(/-/g, '+').replace(/_/g, '/'));
+
+                // Decompress if needed (add pako library for decompression)
+                const data = isCompressed ? 
+                    JSON.parse(pako.inflate(decoded, { to: 'string' })) : 
+                    JSON.parse(decoded);
+
                 
                 // Update header
                 document.getElementById('quiz-title').textContent = data.quiz;
