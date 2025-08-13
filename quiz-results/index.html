@@ -187,109 +187,103 @@
     </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
 <script>
-    function base64ToUint8Array(base64) {
-        const binary_string = atob(base64);
-        const len = binary_string.length;
-        const bytes = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-            bytes[i] = binary_string.charCodeAt(i);
-        }
-        return bytes;
+function base64ToUint8Array(base64) {
+    const binary_string = atob(base64);
+    const len = binary_string.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
     }
+    return bytes;
+}
 
-    function loadResults() {
-        try {
-            const hash = window.location.hash.substring(1);
-            const isCompressed = hash.startsWith('c');
-            const actualHash = isCompressed ? hash.substring(1) : hash;
+function loadResults() {
+    try {
+        // Get 'data' param from query string instead of hash
+        const params = new URLSearchParams(window.location.search);
+        let hash = params.get('data');
+        if (!hash) throw new Error("No quiz data found");
 
-            if (!actualHash) throw new Error("No quiz data found");
+        const isCompressed = hash.startsWith('c');
+        const actualHash = isCompressed ? hash.substring(1) : hash;
 
-            let data;
-            if (isCompressed) {
-                // Compressed format from Ruby (Zlib::Deflate)
-                const compressedBytes = base64ToUint8Array(
-                    actualHash.replace(/-/g, '+').replace(/_/g, '/')
-                );
-                const jsonStr = pako.inflate(compressedBytes, { to: 'string' });
-                data = JSON.parse(jsonStr);
-            } else {
-                // Uncompressed JSON in Base64
-                const jsonStr = atob(actualHash.replace(/-/g, '+').replace(/_/g, '/'));
-                data = JSON.parse(jsonStr);
-            }
-
-            // Update header
-            document.getElementById('quiz-title').textContent = data.quiz;
-            document.getElementById('score').textContent = data.score + '%';
-            document.getElementById('score-text').textContent = 
-                `You scored ${data.correct} out of ${data.total} questions correctly`;
-            document.getElementById('date').textContent = `Completed on ${data.date}`;
-            
-            // Update stats
-            document.getElementById('correct').textContent = data.correct;
-            document.getElementById('total').textContent = data.total;
-            
-            // Calculate grade
-            let grade = 'F';
-            if (data.score >= 90) grade = 'A';
-            else if (data.score >= 80) grade = 'B';
-            else if (data.score >= 70) grade = 'C';
-            else if (data.score >= 60) grade = 'D';
-            document.getElementById('grade').textContent = grade;
-            
-            // Display questions
-            const questionsDiv = document.getElementById('questions');
-            questionsDiv.innerHTML = '';
-            
-            data.details.forEach(q => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = `question-item ${q.is_correct ? 'correct' : 'incorrect'}`;
-                
-                questionDiv.innerHTML = `
-                    <div class="question-number">Question ${q.num}: ${q.question}</div>
-                    <div class="answer">
-                        Your answer: <span class="${q.is_correct ? 'correct-answer' : 'wrong-answer'}">
-                            ${q.user_answer}
-                        </span>
-                    </div>
-                    ${!q.is_correct ? `
-                        <div class="answer">
-                            Correct answer: <span class="correct-answer">${q.correct_answer}</span>
-                        </div>
-                    ` : ''}
-                `;
-                
-                questionsDiv.appendChild(questionDiv);
-            });
-
-        } catch (error) {
-            document.querySelector('.container').innerHTML = `
-                <div class="error">
-                    <h2>Unable to load quiz results</h2>
-                    <p>Please check the link and try again</p>
-                </div>
-            `;
-        }
-    }
-    
-    function shareResults() {
-        const text = `I scored ${document.getElementById('score').textContent} on ${document.getElementById('quiz-title').textContent}! Check out my results: ${window.location.href}`;
-        
-        if (navigator.share) {
-            navigator.share({
-                title: 'Quiz Results',
-                text: text,
-                url: window.location.href
-            });
+        let data;
+        if (isCompressed) {
+            // Compressed format
+            const compressedBytes = base64ToUint8Array(
+                actualHash.replace(/-/g, '+').replace(/_/g, '/')
+            );
+            const jsonStr = pako.inflate(compressedBytes, { to: 'string' });
+            data = JSON.parse(jsonStr);
         } else {
-            navigator.clipboard.writeText(text);
-            alert('Results link copied to clipboard!');
+            // Uncompressed JSON
+            const jsonStr = atob(actualHash.replace(/-/g, '+').replace(/_/g, '/'));
+            data = JSON.parse(jsonStr);
         }
+
+        // Update page
+        document.getElementById('quiz-title').textContent = data.quiz;
+        document.getElementById('score').textContent = data.score + '%';
+        document.getElementById('score-text').textContent =
+            `You scored ${data.correct} out of ${data.total} questions correctly`;
+        document.getElementById('date').textContent = `Completed on ${data.date}`;
+
+        document.getElementById('correct').textContent = data.correct;
+        document.getElementById('total').textContent = data.total;
+
+        let grade = 'F';
+        if (data.score >= 90) grade = 'A';
+        else if (data.score >= 80) grade = 'B';
+        else if (data.score >= 70) grade = 'C';
+        else if (data.score >= 60) grade = 'D';
+        document.getElementById('grade').textContent = grade;
+
+        const questionsDiv = document.getElementById('questions');
+        questionsDiv.innerHTML = '';
+        data.details.forEach(q => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = `question-item ${q.is_correct ? 'correct' : 'incorrect'}`;
+            questionDiv.innerHTML = `
+                <div class="question-number">Question ${q.num}: ${q.question}</div>
+                <div class="answer">
+                    Your answer: <span class="${q.is_correct ? 'correct-answer' : 'wrong-answer'}">
+                        ${q.user_answer}
+                    </span>
+                </div>
+                ${!q.is_correct ? `
+                    <div class="answer">
+                        Correct answer: <span class="correct-answer">${q.correct_answer}</span>
+                    </div>
+                ` : ''}
+            `;
+            questionsDiv.appendChild(questionDiv);
+        });
+
+    } catch (error) {
+        document.querySelector('.container').innerHTML = `
+            <div class="error">
+                <h2>Unable to load quiz results</h2>
+                <p>Please check the link and try again</p>
+            </div>
+        `;
     }
-    
-    // Load results on page load
-    window.addEventListener('load', loadResults);
+}
+
+function shareResults() {
+    const text = `I scored ${document.getElementById('score').textContent} on ${document.getElementById('quiz-title').textContent}! Check out my results: ${window.location.href}`;
+    if (navigator.share) {
+        navigator.share({
+            title: 'Quiz Results',
+            text: text,
+            url: window.location.href
+        });
+    } else {
+        navigator.clipboard.writeText(text);
+        alert('Results link copied to clipboard!');
+    }
+}
+
+window.addEventListener('load', loadResults);
 </script>
 
 </body>
